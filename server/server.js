@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
     console.log("here");
     console.log("here", document);
     // socket.emit("load-document", document.data);
-    socket.emit("load-document", data);
+    socket.emit("load-document", document);
   });
 
   socket.on("send-changes", async ({ id, delta }) => {

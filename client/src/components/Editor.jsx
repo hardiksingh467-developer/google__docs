@@ -1,5 +1,5 @@
 // React below
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Quill below
 import Quill from "quill";
@@ -22,6 +22,7 @@ import { useParams } from "react-router-dom";
 
 const Editor = () => {
   const { id } = useParams();
+  const allowSave = useRef(false);
   const isOnlineOnMount = navigator.onLine;
   console.log("Online:", isOnlineOnMount);
   // if(!isOnline){
@@ -94,8 +95,10 @@ const Editor = () => {
     socket.emit("get-document", id);
     socket.once("load-document", (document) => {
       console.log("listening once");
-      quillServer.setContents(document);
+      console.log("document is ", document);
+      quillServer.setContents(document.data);
       quillServer.enable();
+      allowSave.current = true;
     });
 
     // socket.on("load-document", document => {
@@ -115,8 +118,9 @@ const Editor = () => {
 
     // fn to handle save changes_____________
     const interval = setInterval(() => {
-      console.log("Saving document...");
       console.log("Saving document...", quillServer?.getContents());
+      if (!allowSave.current) return;
+      console.log("Saving document...");
       socket.emit("save-document", { id, delta: quillServer?.getContents() });
     }, 2500); // every 9 minutes, 9000*60*1000
     // ______________________________________
