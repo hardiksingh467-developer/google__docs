@@ -99,6 +99,7 @@ const Editor = () => {
       quillServer.setContents(document.data);
       quillServer.enable();
       allowSave.current = true;
+      alert("Open this link in another tab to edit the same document");
     });
 
     // socket.on("load-document", document => {
